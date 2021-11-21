@@ -9,10 +9,9 @@ namespace NFTdb_init
     {
         private static void Main(string[] args)
         {
-            string dbfile = "URI=file:NFTDB.db";
-            SQLiteConnection connection = new SQLiteConnection(dbfile);
-            connection.Open();
-            DB_Record record = new DB_Record();
+            var record = new DB_Record();
+            var nftTable = new DB_Record();
+            var projectTable = new Collection_Eyeball();
             string[] path_parts;
 
             string defaultFolder = @"G:\Projects\hashlips_art_engine-1.0.4\build";
@@ -30,29 +29,13 @@ namespace NFTdb_init
                     nftsToAdd.Add(line);
                 }
             }
-
-            foreach (string nft in nftsToAdd)
+            foreach (string nftFile in nftsToAdd)
             {
-                Console.WriteLine(nft);
-                var NftMakerToConvert = File.ReadAllLines(nft);
-                record.Name = PrepJSONforDB(NftMakerToConvert[4]);
-                record.Description = PrepJSONforDB(NftMakerToConvert[7]);
-                record.Price = 100;
-                record.Sold = false;
-                record.Max_Copies = 50;
-                record.Minted = 0;
+                nftTable = record.buildRecord(nftFile);
+                record.AddRow(nftTable);
             }
         }
-
-        private static string PrepJSONforDB(string fieldToClean)
-        {
-            string jsonBuffer;
-            string[] json_parts;
-            json_parts = fieldToClean.Split(':');
-            jsonBuffer = json_parts[1];
-            jsonBuffer = jsonBuffer.Replace(",", String.Empty);
-            jsonBuffer = jsonBuffer.Replace("\"", String.Empty);
-            return jsonBuffer;
-        }
+        
+        
     }
 }
