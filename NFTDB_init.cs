@@ -9,9 +9,10 @@ namespace NFTdb_init
     {
         private static void Main(string[] args)
         {
-            var record = new DB_Record();
+            var DBRecord = new DB_Record();
             var nftTable = new DB_Record();
-            var projectTable = new Collection_Eyeball();
+            var projectTable = new EyeBall();
+            var collectionRecord = new EyeBall();
             string[] path_parts;
 
             string defaultFolder = @"G:\Projects\hashlips_art_engine-1.0.4\build";
@@ -29,10 +30,15 @@ namespace NFTdb_init
                     nftsToAdd.Add(line);
                 }
             }
-            foreach (string nftFile in nftsToAdd)
+            // foreach (string nftFile in nftsToAdd)
+            for (int i = 0; i < nftsToAdd.Count-1; i++)
             {
-                nftTable = record.buildRecord(nftFile);
-                record.AddRow(nftTable);
+                string nftFile = nftsToAdd[i];
+       
+                nftTable = DBRecord.NFTBuildRecord(nftFile);
+                DBRecord.AddRow(nftTable);
+                projectTable = collectionRecord.CollectionBuildRecord(nftFile);
+                collectionRecord.AddRow(projectTable, i);
             }
         }
         

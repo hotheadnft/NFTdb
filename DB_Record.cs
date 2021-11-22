@@ -77,17 +77,18 @@ namespace NFTdb_init
             return jsonBuffer;
         }
 
-        public DB_Record buildRecord(string nft)
+        public DB_Record NFTBuildRecord(string nftJSONFile)
         {
             DB_Record currentRecord = new DB_Record();
 
-            var NftMakerToConvert = File.ReadAllLines(nft);
+            var NftMakerToConvert = File.ReadAllLines(nftJSONFile);
             currentRecord.Name = PrepJSONforDB(NftMakerToConvert[4]);
             currentRecord.Description = PrepJSONforDB(NftMakerToConvert[7]);
             currentRecord.Price = 100;
             currentRecord.Sold = 0;
             currentRecord.Max_Copies = 50;
             currentRecord.Minted = 0;
+            // add collection fields (background, eyeball, eyecolor, etc) here as well
 
             return currentRecord;
         }
