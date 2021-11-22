@@ -51,9 +51,17 @@ namespace NFTdb_init
             SQLiteConnection connection = new SQLiteConnection(dbfile);
             connection.Open();
 
-            string addNft = "insert into NFT (name,description,price,sold,max_copies,total_minted)  VALUES ('name','description','price','sold','max_copies','total_minted');";
+            string addNft = "insert into NFT (id,name,description,price,sold,max_copies,total_minted)  VALUES (@id,@name,@description,@price,@sold,@max_copies,@total_minted);";
+            //string addNft = "insert into NFT (name)  VALUES (@name);";
             SQLiteCommand command = new SQLiteCommand(addNft, connection);
-            
+            command.Parameters.AddWithValue("@id", null);
+            command.Parameters.AddWithValue("@name",name);
+            command.Parameters.AddWithValue("@price", price);
+            command.Parameters.AddWithValue("@description", description); 
+            command.Parameters.AddWithValue("@sold", sold); 
+            command.Parameters.AddWithValue("@max_copies", max_copies);
+            command.Parameters.AddWithValue("@total_minted",total_minted);
+
             command.ExecuteNonQuery();
             connection.Close();
 
