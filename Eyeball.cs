@@ -15,6 +15,10 @@ namespace NFTdb_init
         private string _shine;
         private string _bottom_lid;
         private string _top_lid;
+        private string _dna;
+        private string _twitter;
+        private string _web;
+
         public int ID { get => _id; set => _id = value; }
         public int Nftid { get => _nftid; set => _nftid = value; }
         public string Background { get => _background; set => _background = value; }
@@ -24,7 +28,9 @@ namespace NFTdb_init
         public string Shine { get => _shine; set => _shine = value; }
         public string Bottom_lid { get => _bottom_lid; set => _bottom_lid = value; }
         public string Top_lid { get => _top_lid; set => _top_lid = value; }
-
+        public string dna { get => _dna; set => _dna = value; }
+        public string twitter { get => _twitter; set => _twitter = value; }
+        public string web { get => _web; set => _web = value; }
         public EyeBall()
         { }
 
@@ -41,6 +47,9 @@ namespace NFTdb_init
             currentCollection.Shine = PrepJSONforDB(NftMakerToConvert[19]);
             currentCollection.Bottom_lid = PrepJSONforDB(NftMakerToConvert[20]);
             currentCollection.Top_lid = PrepJSONforDB(NftMakerToConvert[21]);
+            currentCollection.dna = PrepJSONforDB(NftMakerToConvert[22]);
+            currentCollection.twitter = PrepJSONforDB(NftMakerToConvert[23]);
+            currentCollection.web = PrepJSONforDB(NftMakerToConvert[24]);
 
             return currentCollection;
         }
@@ -58,7 +67,7 @@ namespace NFTdb_init
 
         public void AddRow(EyeBall collection, int loopCtr)
         {
-            string background, eyeball, eyecolor, iris, shine, bottom_lid, top_lid;
+            string background, eyeball, eyecolor, iris, shine, bottom_lid, top_lid,dna,twitter,web;
             int nftid;
             eyeball = collection.Eyeball;
             background = collection.Background;
@@ -67,13 +76,16 @@ namespace NFTdb_init
             shine = collection.Shine;
             bottom_lid = collection.Bottom_lid;
             top_lid = collection.Top_lid;
+            dna = collection.dna;
+            twitter = collection.twitter;
+            web = collection.web;
 
             string dbfile = "URI=file:NFTDB.db";
             SQLiteConnection connection = new SQLiteConnection(dbfile);
             connection.Open();
 
-            string addCollection = "insert into Eyeball9(id,NFTid,eyeball,eyecolor,iris,shine,bottom_lid,top_lid,background)" +
-                "VALUES (@id,@NFTid,@eyeball,@eyecolor,@iris,@shine,@bottom_lid,@top_lid,@background);";
+            string addCollection = "insert into Eyeball9(id,NFTid,eyeball,eyecolor,iris,shine,bottom_lid,top_lid,background,dna,twitter,web)" +
+                "VALUES (@id,@NFTid,@eyeball,@eyecolor,@iris,@shine,@bottom_lid,@top_lid,@background,@dna,@twitter,@web);";
             nftid = loopCtr;
             nftid++;
             SQLiteCommand command = new SQLiteCommand(addCollection, connection);
@@ -87,7 +99,10 @@ namespace NFTdb_init
             command.Parameters.AddWithValue("@shine", shine);
             command.Parameters.AddWithValue("@bottom_lid", bottom_lid);
             command.Parameters.AddWithValue("@top_lid", top_lid);
-           
+            command.Parameters.AddWithValue("@dna", dna);
+            command.Parameters.AddWithValue("@twitter", twitter);
+            command.Parameters.AddWithValue("@web", web);
+
             command.ExecuteNonQuery();
             connection.Close();
         }
