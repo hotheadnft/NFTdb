@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
 
@@ -14,6 +13,7 @@ namespace NFTdb_init
             var projectTable = new EyeBall();
             var collectionRecord = new EyeBall();
             string[] path_parts;
+            long rowid, collectionid;
 
             string defaultFolder = @"G:\Projects\hashlips_art_engine-1.0.4\build";
 
@@ -31,17 +31,24 @@ namespace NFTdb_init
                 }
             }
             // foreach (string nftFile in nftsToAdd)
-            for (int i = 0; i < nftsToAdd.Count-1; i++)
+            for (int i = 0; i < nftsToAdd.Count - 1; i++)
             {
                 string nftFile = nftsToAdd[i];
-       
+
                 nftTable = DBRecord.NFTBuildRecord(nftFile);
-                DBRecord.AddRow(nftTable);
+                rowid = DBRecord.AddRow(nftTable);
                 projectTable = collectionRecord.CollectionBuildRecord(nftFile);
-                collectionRecord.AddRow(projectTable, i);
+                collectionid = collectionRecord.AddRow(projectTable, i, rowid);
+
+                //update NFT with collection id
+                string dbfile = "URI=file:NFTDB.db";
+                SQLiteConnection connection = new SQLiteConnection(dbfile);
+                connection.Open();
+
+                string addNft = $"update NFT set collectionid = {collectionid}  where id={rowid}";
+                SQLiteCommand command = new SQLiteCommand(addNft, connection);
+                command.ExecuteNonQuery();
             }
         }
-        
-        
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.IO;
 
 namespace NFTdb_init
@@ -65,10 +66,11 @@ namespace NFTdb_init
             return jsonBuffer;
         }
 
-        public void AddRow(EyeBall collection, int loopCtr)
+        public long AddRow(EyeBall collection, int loopCtr,long rowid)
         {
             string background, eyeball, eyecolor, iris, shine, bottom_lid, top_lid,dna,twitter,web;
-            int nftid;
+            long collectionid;
+
             eyeball = collection.Eyeball;
             background = collection.Background;
             eyecolor = collection.Eyecolor;
@@ -79,19 +81,18 @@ namespace NFTdb_init
             dna = collection.dna;
             twitter = collection.twitter;
             web = collection.web;
-
+            string collectionname = "Eyeball9";
             string dbfile = "URI=file:NFTDB.db";
             SQLiteConnection connection = new SQLiteConnection(dbfile);
             connection.Open();
 
-            string addCollection = "insert into Eyeball9(id,NFTid,eyeball,eyecolor,iris,shine,bottom_lid,top_lid,background,dna,twitter,web)" +
-                "VALUES (@id,@NFTid,@eyeball,@eyecolor,@iris,@shine,@bottom_lid,@top_lid,@background,@dna,@twitter,@web);";
-            nftid = loopCtr;
-            nftid++;
+            string addCollection = "insert into Eyeball9(id,NFTid,eyeball,eyecolor,iris,shine,bottom_lid,top_lid,background,dna,twitter,web,collectionname)" +
+                "VALUES (@id,@NFTid,@eyeball,@eyecolor,@iris,@shine,@bottom_lid,@top_lid,@background,@dna,@twitter,@web,@collectionname);";
+           
             SQLiteCommand command = new SQLiteCommand(addCollection, connection);
-            Console.WriteLine(nftid);
+            
             command.Parameters.AddWithValue("@id", null);
-            command.Parameters.AddWithValue("@NFTID", nftid);
+            command.Parameters.AddWithValue("@NFTID", rowid);
             command.Parameters.AddWithValue("@background", background);
             command.Parameters.AddWithValue("@eyeball", eyeball);
             command.Parameters.AddWithValue("@eyecolor", eyecolor);
@@ -101,10 +102,16 @@ namespace NFTdb_init
             command.Parameters.AddWithValue("@top_lid", top_lid);
             command.Parameters.AddWithValue("@dna", dna);
             command.Parameters.AddWithValue("@twitter", twitter);
-            command.Parameters.AddWithValue("@web", web);
+            command.Parameters.AddWithValue("@web", web);            
+            command.Parameters.AddWithValue("@collectionname", collectionname);
 
             command.ExecuteNonQuery();
+            
+            collectionid  = connection.LastInsertRowId;
+            Debug.WriteLine(connection.LastInsertRowId + " after execute");
             connection.Close();
+
+            return collectionid;
         }
     }
 }
